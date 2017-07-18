@@ -13,8 +13,10 @@ if(!isset($_SESSION['id']))
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/bootstrap-datetimepicker.min.css">
   <script src="js/jquery-2.1.3.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
+  <script src="js/bootstrap-datetimepicker.min.js"></script>
   <style type="text/css">
 	.container{
 		text-align: center;
@@ -86,10 +88,16 @@ margin: 0;
             <label for="source">Source</label>
             <input name="source" type="text" class="form-control" id="source" placeholder="Enter Starting Point of Trip">
         </div>
-        <div class="form-group col-xs-10 col-sm-6 col-md-4 col-lg-6">
+        <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
             <label for="date_time">Date-Time of Trip</label>
-            <input name="date_time" type="text" class="form-control" id="date" placeholder="Enter Date and Time of Trip">
+            <div class="input-group date form_datetime" data-date="1979-09-16T05:25:07Z" data-date-format="yyyy-mm-dd hh:ii:ss" data-link-field="dtp_input1">
+                <input class="form-control" name='date_time' size="16" type="text" value="" placeholder="Enter Date and Time of Trip">
+                <span class="input-group-addon btn btn-sm"><span class="glyphicon glyphicon-remove"></span></span>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+            </div>
+                <input type="hidden" id="dtp_input1" value="" /><br/>
         </div>
+
         <div class="clearfix"></div>
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
             <label for="via">Via</label>
@@ -112,7 +120,17 @@ margin: 0;
 	</div>
 
 </div>
-
+<!-- This script is used for datetime-picker used in the date-time field -->
+<script type="text/javascript">
+	$(".form_datetime").datetimepicker({
+		format: "yyyy-mm-dd hh:ii:ss",
+		autoclose: true,
+		showMeridian: true,
+		todayBtn: true,
+		startDate: "+0d",
+		minuteStep: 10
+	});
+</script>
 <?php
 	
 	if($_POST['submit']=="Create Trip")
