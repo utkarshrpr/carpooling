@@ -84,11 +84,11 @@ margin: 0;
 	  <form role="form" method="post">
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
             <label for="source">Source</label>
-            <input type="text" class="form-control" id="source" placeholder="Enter Starting Point of Trip">
+            <input name="source" type="text" class="form-control" id="source" placeholder="Enter Starting Point of Trip">
         </div>
         <div class="form-group col-xs-10 col-sm-6 col-md-4 col-lg-6">
             <label for="destination">Destination</label>
-            <input type="text" class="form-control" id="destination" placeholder="Enter Ending Point of Trip">
+            <input name="destination" type="text" class="form-control" id="destination" placeholder="Enter Ending Point of Trip">
         </div>
         <div class="clearfix"></div>
         <input type="submit" name="submit" class="btn btn-success btn-bg margintop an" value="Search Trips" />
@@ -97,10 +97,93 @@ margin: 0;
 
     <br /><br />
 	</div>
-
-
-
 </div>
+
+<?php 
+	
+	if($_POST['submit']=="Search Trips")
+	{
+
+		// Check if the user filled the source
+		if (!$_POST['source'])$error.="<br />Please enter starting point of trip";
+
+		// Check if the user filled the destination
+		if (!$_POST['destination']) $error=$error."<br />Please enter ending point of trip";
+
+		// Check if any errors were encountered
+		if ($error)
+		$error="There were error(s) in creation of the trip:".$error;
+
+		// If no errors, proceed for registration
+		else
+		{	
+
+			// Get the driver id 
+			$user_id=$_SESSION['id'];
+
+			// Get all the trips between source and destination
+			$query="SELECT * FROM trips where source='".mysqli_real_escape_string($link,$_POST['source'])."' AND destination='".$_POST['destination']."'";
+
+			echo "<br>";
+			
+			// Execute the query and store the result
+			$result=mysqli_query($link,$query);
+
+			$message='Trips from '.$_POST['source'].' to '.$_POST['destination'];
+
+			echo '<div class="container">
+ 			<h4>'.$message.'</h4>
+  			<hr> 
+ 			</div>';
+
+			echo '<div class="col-md-2 col-md-offset-8">';
+			$table = '<table class="table table-striped">
+    		<thead>
+      		<tr>
+      		<th style="text-align:center">Free Spots</th>
+      		<th style="text-align:center">Via</th>
+     		<th style="text-align:center">Date and Time</th>
+     		<th style="text-align:center">Driver</th>
+     		<th style="text-align:center">Contact</th>
+     		<th style="text-align:center">Rating</th>';
+			$table.= '
+      		</tr>
+    		</thead>
+    		<tbody>';
+
+			while($row = mysqli_fetch_array($result))
+			{
+
+				$query1="SELECT * FROM user WHERE user_id='".mysqli_real_escape_string($link,$row['driver_id'])."'";
+				$result1=mysqli_query($link,$query1);
+				$row1=mysqli_fetch_array($result1);
+				$freespots = $row['free_spots'];
+			 	$via = $row['via'];
+			 	$date_time = $row['date_time'];
+			 	$driver = $row1['name'];
+			 	$contact = $row1['contact'];
+			 	$rating = $row1['rating'];
+
+				$table.= '<tr><td style="text-align:center;">'.$freespots.'</td>';
+				$table.= '<td style="text-align:center;">'.$via.'</td>';
+				$table.= '<td style="text-align:center;">'.$date_time.'</td>';
+				$table.= '<td style="text-align:center;">'.$driver.'</td>';
+				$table.= '<td style="text-align:center;">'.$contact.'</td>';
+				$table.= '<td style="text-align:center;">'.$rating.'</td>';
+			 	$table.= '</tr>';
+			 }
+
+			    $table.= '
+			    </tbody>
+			  </table>';
+				echo '</div>';
+				echo $table;
+
+		}
+	}
+
+
+?>
 
 </body>
 </html>
