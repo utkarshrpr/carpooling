@@ -87,17 +87,13 @@ margin: 0;
             <input name="source" type="text" class="form-control" id="source" placeholder="Enter Starting Point of Trip">
         </div>
         <div class="form-group col-xs-10 col-sm-6 col-md-4 col-lg-6">
-            <label for="date">Date</label>
-            <input name="date" type="text" class="form-control" id="date" placeholder="Enter Date of Trip">
+            <label for="date_time">Date-Time of Trip</label>
+            <input name="date_time" type="text" class="form-control" id="date" placeholder="Enter Date and Time of Trip">
         </div>
         <div class="clearfix"></div>
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
             <label for="via">Via</label>
             <input name="via" type="text" class="form-control" id="via" placeholder="Enter a mid-point on your route">
-        </div>
-        <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
-            <label for="time">Time</label>
-            <input name="time" type="text" class="form-control" id="time" placeholder="Enter the Time of Trip">
         </div>
         <div class="clearfix"></div>
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
@@ -125,14 +121,11 @@ margin: 0;
 		// Check if the user filled the source
 		if (!$_POST['source'])$error.="<br />Please enter starting point of trip";
 
-    	// Check if the user filled the date of trip
-		if (!$_POST['date']) $error=$error."<br />Please enter date of trip";
+    	// Check if the user filled the date and time of trip
+		if (!$_POST['date_time']) $error=$error."<br />Please enter date and time of trip";
 
 		// Check if the user filled a mid-point in the route
 		if (!$_POST['via']) $error=$error."<br />Please enter a mid-point in the route";
-
-		// Check if the user filled the time of trip
-		if (!$_POST['time']) $error=$error."<br />Please enter time of trip";
 
 		// Check if the user filled the destination
 		if (!$_POST['destination']) $error=$error."<br />Please enter ending point of trip";
@@ -152,7 +145,7 @@ margin: 0;
 			$driver_id=$_SESSION['id'];
 
 			// Insert the details entered by the user in the database
-			$query="INSERT INTO trips(source,destination,free_spots,via,date,time,driver_id) VALUES('".mysqli_real_escape_string($link,$_POST['source'])."','".mysqli_real_escape_string($link,$_POST['destination'])."','".mysqli_real_escape_string($link,$_POST['freespots'])."','".mysqli_real_escape_string($link,$_POST['via'])."','".mysqli_real_escape_string($link,$_POST['date'])."','".mysqli_real_escape_string($link,$_POST['time'])."','".mysqli_real_escape_string($link,$driver_id)."')";
+			$query="INSERT INTO trips(source,destination,free_spots,via,date_time,driver_id) VALUES('".mysqli_real_escape_string($link,$_POST['source'])."','".mysqli_real_escape_string($link,$_POST['destination'])."','".mysqli_real_escape_string($link,$_POST['freespots'])."','".mysqli_real_escape_string($link,$_POST['via'])."','".mysqli_real_escape_string($link,$_POST['date_time'])."','".mysqli_real_escape_string($link,$driver_id)."')";
 
 			// Execute the query
 			mysqli_query($link,$query);
