@@ -1,6 +1,7 @@
 <?php
 	session_start();
-if(!isset($_SESSION['id'])){
+if(!isset($_SESSION['id']))
+{
 	header("Location:index.php");
 }
 ?>
@@ -83,41 +84,76 @@ margin: 0;
 	  <form role="form" method="post">
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
             <label for="source">Source</label>
-            <input type="text" class="form-control" id="source" placeholder="Enter Starting Point of Trip">
+            <input name="source" type="text" class="form-control" id="source" placeholder="Enter Starting Point of Trip">
         </div>
         <div class="form-group col-xs-10 col-sm-6 col-md-4 col-lg-6">
-            <label for="date">Date</label>
-            <input type="text" class="form-control" id="date" placeholder="Enter Date of Trip">
+            <label for="date_time">Date-Time of Trip</label>
+            <input name="date_time" type="text" class="form-control" id="date" placeholder="Enter Date and Time of Trip">
         </div>
         <div class="clearfix"></div>
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
             <label for="via">Via</label>
-            <input type="text" class="form-control" id="via" placeholder="Enter ">
-        </div>
-        <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
-            <label for="time">Time</label>
-            <input type="text" class="form-control" id="time" placeholder="Enter the Time of Trip">
+            <input name="via" type="text" class="form-control" id="via" placeholder="Enter a mid-point on your route">
         </div>
         <div class="clearfix"></div>
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
             <label for="destination">Destination</label>
-            <input type="text" class="form-control" id="destination" placeholder="Enter Ending Point of Trip">
+            <input name="destination" type="text" class="form-control" id="destination" placeholder="Enter Ending Point of Trip">
         </div>
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
             <label for="freespots">Number of Free Spots</label>
-            <input type="text" class="form-control" id="freespots" placeholder="Enter the Number of Free Spots">
+            <input name="freespots" type="text" class="form-control" id="freespots" placeholder="Enter the Number of Free Spots">
         </div>
         <div class="clearfix"></div>
         <input type="submit" name="submit" class="btn btn-success btn-bg margintop an" value="Create Trip" />
     </form>
     <div class="clearfix"></div>
-
     <br /><br />
 	</div>
 
-
-
 </div>
+
+<?php
+	
+	if($_POST['submit']=="Create Trip")
+	{
+
+		// Check if the user filled the source
+		if (!$_POST['source'])$error.="<br />Please enter starting point of trip";
+
+    	// Check if the user filled the date and time of trip
+		if (!$_POST['date_time']) $error=$error."<br />Please enter date and time of trip";
+
+		// Check if the user filled a mid-point in the route
+		if (!$_POST['via']) $error=$error."<br />Please enter a mid-point in the route";
+
+		// Check if the user filled the destination
+		if (!$_POST['destination']) $error=$error."<br />Please enter ending point of trip";
+
+		// Check if the user filled the number of free spots
+		if (!$_POST['freespots']) $error=$error."<br />Please enter the number of free spots";
+
+		// Check if any errors were encountered
+		if ($error)
+		$error="There were error(s) in creation of the trip:".$error;
+
+		// If no errors, proceed for registration
+		else
+		{	
+
+			// Get the driver id 
+			$driver_id=$_SESSION['id'];
+
+			// Insert the details entered by the user in the database
+			$query="INSERT INTO trips(source,destination,free_spots,via,date_time,driver_id) VALUES('".mysqli_real_escape_string($link,$_POST['source'])."','".mysqli_real_escape_string($link,$_POST['destination'])."','".mysqli_real_escape_string($link,$_POST['freespots'])."','".mysqli_real_escape_string($link,$_POST['via'])."','".mysqli_real_escape_string($link,$_POST['date_time'])."','".mysqli_real_escape_string($link,$driver_id)."')";
+
+			// Execute the query
+			mysqli_query($link,$query);
+
+		}
+	}
+
+?>
 
 </body>
 </html>
