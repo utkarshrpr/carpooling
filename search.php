@@ -129,6 +129,13 @@ margin: 0;
 			// Execute the query and store the result
 			$result=mysqli_query($link,$query);
 
+			$message='Trips from '.$_POST['source'].' to '.$_POST['destination'];
+
+			echo '<div class="container">
+ 			<h4>'.$message.'</h4>
+  			<hr> 
+ 			</div>';
+
 			echo '<div class="col-md-2 col-md-offset-8">';
 			$table = '<table class="table table-striped">
     		<thead>
