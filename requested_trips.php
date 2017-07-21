@@ -101,12 +101,14 @@ margin: 0;
 		<th style="text-align:center">Source</th>
 		<th style="text-align:center">Destination</th>
 		<th style="text-align:center">Date and Time</th>
-		<th style="text-align:center">Number of Passengers</th>';
+		<th style="text-align:center">Number of Passengers</th>
+		<th style="text-align:center">Create</th>';
 	$table.= '
 		</tr>
 	</thead>
 	<tbody>';
 
+	$id_number=1;
 	while($row = mysqli_fetch_array($result))
 	{
 
@@ -117,21 +119,25 @@ margin: 0;
 	 	$source = $row['source'];
 	 	$destination = $row['destination'];
 	 	$date_time = $row['date_time'];
+	 	$request_id = $row['request_id'];
 	 	$user = $row1['name'];
 	 	$rating = $row1['rating'];
 
-		$table.= '<tr><td style="text-align:center;">'.$user.'</td>';
+		$table.= '<tr id="'.$id_number.'"><td style="text-align:center;">'.$user.'</td>';
 		$table.= '<td style="text-align:center;">'.$rating.'</td>';
 		$table.= '<td style="text-align:center;">'.$source.'</td>';
 		$table.= '<td style="text-align:center;">'.$destination.'</td>';
 		$table.= '<td style="text-align:center;">'.$date_time.'</td>';
 		$table.= '<td style="text-align:center;">'.$passengers.'</td>';
+		$table.= '<td style="text-align:center;"><a href="create_requested.php?request='.$request_id.'&source='.$source.'&destination='.$destination.'&date_time='.$date_time.'" class="buttonize">Create</a></td>';
 	 	$table.= '</tr>';
+
+	 	$id_number+=1;
 	 }
 
 	    $table.= '
 	    </tbody>
-	  </table>';
+	  	</table>';
 		echo '</div>';
 		echo $table;
 
