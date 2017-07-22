@@ -131,20 +131,24 @@ margin: 0;
 	{
 
 		// Check if the user filled the source
-		if (!$_POST['source'])$error.="<br />Please enter starting point of trip";
+		if (!$_POST['source']) $error="<br />Please enter starting point of trip";
 
     	// Check if the user filled the date and time of trip
-		if (!$_POST['date_time']) $error=$error."<br />Please enter date and time of trip";
+		if (!$_POST['date_time']) $error="<br />Please enter date and time of trip";
 
 		// Check if the user filled the destination
-		if (!$_POST['destination']) $error=$error."<br />Please enter ending point of trip";
+		if (!$_POST['destination']) $error="<br />Please enter ending point of trip";
 
 		// Check if the user filled the number of free spots
-		if (!$_POST['passengers']) $error=$error."<br />Please enter the number of passengers";
+		if (!$_POST['passengers']) $error="<br />Please enter the number of passengers";
 
 		// Check if any errors were encountered
 		if ($error)
-		$error="There were error(s) in requesting the trip:".$error;
+		{
+			$error="There were error(s) in creation of the trip:".$error;
+			echo '<div class="alert alert-danger" style="text-align:center;">'.addslashes($error).'</div>';
+
+		}
 
 		// If no errors, proceed for registration
 		else
