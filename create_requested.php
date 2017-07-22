@@ -1,9 +1,9 @@
 <?php
 	session_start();
-if(!isset($_SESSION['id']))
-{
-	header("Location:index.php");
-}
+	if(!isset($_SESSION['id']))
+	{
+		header("Location:index.php");
+	}
 ?>
 
 <!DOCTYPE html>
@@ -79,6 +79,9 @@ margin: 0;
 	<?php
 
 		echo '<h2>Hi, '.$_SESSION['name'].'! Welcome to Carpooling !!</h2>';
+		$query = "SELECT * FROM request WHERE request_id='".mysqli_real_escape_string($link,$_GET['request'])."'";
+		$result = mysqli_query($link,$query);
+		$row = mysqli_fetch_array($result);
 
 	?>
 
@@ -86,12 +89,12 @@ margin: 0;
 	  <form role="form" method="post">
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
             <label for="source">Source</label>
-            <input readonly name="source" type="text" class="form-control" id="source" value="<?php echo $_GET['source']; ?>">
+            <input readonly name="source" type="text" class="form-control" id="source" value="<?php echo $row['source']; ?>">
         </div>
 
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
             <label for="date_time">Date-Time of Trip</label>
-            <input readonly name="date_time" type="text" class="form-control" id="date_time" value="<?php echo $_GET['date_time']; ?>">
+            <input readonly name="date_time" type="text" class="form-control" id="date_time" value="<?php echo $row['date_time']; ?>">
         </div>
 
         <div class="clearfix"></div>
@@ -102,7 +105,7 @@ margin: 0;
         <div class="clearfix"></div>
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
             <label for="destination">Destination</label>
-            <input readonly name="destination" type="text" class="form-control" id="destination" value="<?php echo $_GET['destination']; ?>">
+            <input readonly name="destination" type="text" class="form-control" id="destination" value="<?php echo $row['destination']; ?>">
         </div>
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
             <label for="freespots">Number of Free Spots</label>
@@ -123,23 +126,27 @@ margin: 0;
 	{
 
 		// Check if the user filled the source
-		if (!$_POST['source'])$error.="<br />Please enter starting point of trip";
+		if (!$_POST['source']) $error="<br />Please enter starting point of trip";
 
     	// Check if the user filled the date and time of trip
-		if (!$_POST['date_time']) $error=$error."<br />Please enter date and time of trip";
+		if (!$_POST['date_time']) $error="<br />Please enter date and time of trip";
 
 		// Check if the user filled a mid-point in the route
-		if (!$_POST['via']) $error=$error."<br />Please enter a mid-point in the route";
+		if (!$_POST['via']) $error="<br />Please enter a mid-point in the route";
 
 		// Check if the user filled the destination
-		if (!$_POST['destination']) $error=$error."<br />Please enter ending point of trip";
+		if (!$_POST['destination']) $error="<br />Please enter ending point of trip";
 
 		// Check if the user filled the number of free spots
-		if (!$_POST['freespots']) $error=$error."<br />Please enter the number of free spots";
+		if (!$_POST['freespots']) $error="<br />Please enter the number of free spots";
 
 		// Check if any errors were encountered
 		if ($error)
-		$error="There were error(s) in creation of the trip:".$error;
+		{
+			$error="There were error(s) in creation of the trip:".$error;
+			echo '<div class="alert alert-danger" style="text-align:center;">'.addslashes($error).'</div>';
+
+		}
 
 		// If no errors, proceed for registration
 		else
