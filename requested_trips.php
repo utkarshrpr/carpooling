@@ -129,7 +129,7 @@ margin: 0;
 		$table.= '<td style="text-align:center;">'.$destination.'</td>';
 		$table.= '<td style="text-align:center;">'.$date_time.'</td>';
 		$table.= '<td style="text-align:center;">'.$passengers.'</td>';
-		$table.= '<td style="text-align:center;"><a href="create_requested.php?request='.$request_id.'&source='.$source.'&destination='.$destination.'&date_time='.$date_time.'" class="buttonize">Create</a></td>';
+		$table.= '<td style="text-align:center;"><a href="create_requested.php?request='.$request_id.'" class="buttonize">Create</a></td>';
 	 	$table.= '</tr>';
 
 	 	$id_number+=1;
