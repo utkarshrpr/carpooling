@@ -36,6 +36,9 @@
     	// Check if the user entered the email-id of institute domain name
     	if ( ! in_array($domain, $allowed)) $error=$error."<br />Please enter email-id of institute domain only";
 
+    	// Check if the user filled an invalid contact number
+		if (!is_numeric($_POST['contact'])) $error="<br />Please enter a valid contact number";
+
     	// Check if the user filled the name field
 		if (!$_POST['name']) $error=$error."<br />Please enter your name";
 
