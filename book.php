@@ -145,7 +145,7 @@ margin: 0;
 		// Check if any errors were encountered
 		if ($error)
 		{
-			$error="There were error(s) in creation of the trip:".$error;
+			$error="There were error(s) in booking the trip:".$error;
 			echo '<div class="alert alert-danger" style="text-align:center;">'.addslashes($error).'</div>';
 
 		}
