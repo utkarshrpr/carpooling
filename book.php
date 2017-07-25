@@ -154,18 +154,21 @@ margin: 0;
 		else
 		{	
 
-			// Get the driver id 
+			// Get the passenger id 
 			$passenger_id=$_SESSION['id'];
 
-			// Insert the details entered by the user in the database
-			$query1="INSERT INTO passengers(trip_id,num_passengers,passenger_id) VALUES('".mysqli_real_escape_string($link,$row['trip_id'])."','".mysqli_real_escape_string($link,$_POST['passengers'])."','".mysqli_real_escape_string($link,$passenger_id)."')";
+			// Insert the details into the approval table
+			$query1="INSERT INTO approvals(trip_id,user_id,driver_id,passengers) VALUES('".mysqli_real_escape_string($link,$row['trip_id'])."','".mysqli_real_escape_string($link,$passenger_id)."','".mysqli_real_escape_string($link,$row['driver_id'])."','".mysqli_real_escape_string($link,$_POST['passengers'])."')";
 
 			// Execute the query
 			mysqli_query($link,$query1);
 
-			$free_spots=$row['free_spots']-$_POST['passengers'];
-			$sql="UPDATE `trips` SET `free_spots`='".mysqli_real_escape_string($link,$free_spots)."' WHERE `trip_id`='".mysqli_real_escape_string($link,$row['trip_id'])."'";
-			mysqli_query($link, $sql);		
+			// // Insert the details entered by the user in the database
+			// $query1="INSERT INTO passengers(trip_id,num_passengers,passenger_id) VALUES('".mysqli_real_escape_string($link,$row['trip_id'])."','".mysqli_real_escape_string($link,$_POST['passengers'])."','".mysqli_real_escape_string($link,$passenger_id)."')";
+
+			// $free_spots=$row['free_spots']-$_POST['passengers'];
+			// $sql="UPDATE `trips` SET `free_spots`='".mysqli_real_escape_string($link,$free_spots)."' WHERE `trip_id`='".mysqli_real_escape_string($link,$row['trip_id'])."'";
+			// mysqli_query($link, $sql);		
 
 			header("Location:user.php");
 		}

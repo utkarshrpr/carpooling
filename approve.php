@@ -1,6 +1,7 @@
 <?php
 	session_start();
-if(!isset($_SESSION['id'])){
+if(!isset($_SESSION['id']))
+{
 	header("Location:index.php");
 }
 ?>
@@ -78,6 +79,12 @@ margin: 0;
 	<?php
 
 		echo '<h2>Hi, '.$_SESSION['name'].'! Welcome to Carpooling !!</h2>';
+		$query1 = "SELECT * FROM trips WHERE trip_id='".mysqli_real_escape_string($link,$_SESSION['trip_id'])."'";
+		$result1 = mysqli_query($link,$query1);
+		$row1 = mysqli_fetch_array($result1);
+		$query2 = "SELECT name FROM user WHERE user_id='".mysqli_real_escape_string($link,$_SESSION['user_id'])."'";
+		$result2 = mysqli_query($link,$query2);
+		$row2 = mysqli_fetch_array($result2);
 
 	?>
 
@@ -85,49 +92,41 @@ margin: 0;
 	  <form role="form" method="post">
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
             <label for="source">Source</label>
-            <input name="source" type="text" class="form-control" id="source" placeholder="Enter Starting Point of Trip">
+            <input readonly name="source" type="text" class="form-control" id="source" value="<?php echo $row1['source']; ?>">
         </div>
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
             <label for="date_time">Date-Time of Trip</label>
-            <div class="input-group date form_datetime" data-date="1979-09-16T05:25:07Z" data-date-format="yyyy-mm-dd hh:ii:ss" data-link-field="dtp_input1">
-                <input class="form-control" name='date_time' size="16" type="text" value="" placeholder="Enter Date and Time of Trip">
-                <span class="input-group-addon btn btn-sm"><span class="glyphicon glyphicon-remove"></span></span>
-                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-            </div>
-                <input type="hidden" id="dtp_input1" value="" /><br/>
+            <input readonly name="date_time" type="text" class="form-control" id="date_time" value="<?php echo $row1['date_time']; ?>">
         </div>
         <div class="clearfix"></div>
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
             <label for="destination">Destination</label>
-            <input name="destination" type="text" class="form-control" id="destination" placeholder="Enter Ending Point of Trip">
+            <input readonly name="destination" type="text" class="form-control" id="destination" value="<?php echo $row1['destination']; ?>">
         </div>
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
             <label for="passengers">Number of Passengers</label>
-            <input name="passengers" type="text" class="form-control" id="passengers" placeholder="Enter the Number of Passengers">
+            <input readonly name="passengers" type="text" class="form-control" id="passengers" value="<?php echo $_SESSION['passengers']; ?>">
         </div>
         <div class="clearfix"></div>
-        <input type="submit" name="submit" class="btn btn-success btn-bg margintop an" value="Request Trip" />
+        <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
+            <label for="user">Booked By</label>
+            <input readonly name="user" type="text" class="form-control" id="user" value="<?php echo $row2['name']; ?>">
+        </div>
+        <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
+            <label for="freespots">Free Spots</label>
+            <input readonly name="freespots" type="text" class="form-control" id="freespots" value="<?php echo $row1['free_spots']; ?>">
+        </div>
+        <input type="submit" name="submit" class="btn btn-success btn-bg margintop an" value="Approve" />
     </form>
     <div class="clearfix"></div>
-
     <br /><br />
 	</div>
 
 </div>
-<!-- This script is used for datetime-picker used in the date-time field -->
-<script type="text/javascript">
-	$(".form_datetime").datetimepicker({
-		format: "yyyy-mm-dd hh:ii:ss",
-		autoclose: true,
-		showMeridian: true,
-		todayBtn: true,
-		startDate: "+0d",
-		minuteStep: 10
-	});
-</script>
+
 <?php
 	
-	if($_POST['submit']=="Request Trip")
+	if($_POST['submit']=="Approve")
 	{
 
 		// Check if the user filled the source
@@ -136,33 +135,45 @@ margin: 0;
     	// Check if the user filled the date and time of trip
 		if (!$_POST['date_time']) $error="<br />Please enter date and time of trip";
 
+		// Check if the user filled his name
+		if (!$_POST['user']) $error="<br />Please enter the name of the user";
+
 		// Check if the user filled the destination
 		if (!$_POST['destination']) $error="<br />Please enter ending point of trip";
 
-		// Check if the user filled the number of free spots
+		// Check if the user filled the number of passengers
 		if (!$_POST['passengers']) $error="<br />Please enter the number of passengers";
+
+		// Check if the user filled the number of free spots
+		if (!$_POST['freespots']) $error="<br />Please enter the number of freespots";
+
+		if($_POST['passengers']>$_POST['freespots']) $error="<br />Not enough free spots";
 
 		// Check if any errors were encountered
 		if ($error)
 		{
-			$error="There were error(s) in requesting the trip:".$error;
+			$error="There were error(s) in booking the trip:".$error;
 			echo '<div class="alert alert-danger" style="text-align:center;">'.addslashes($error).'</div>';
 
 		}
 
-		// If no errors, proceed for registration
+		// If no errors, proceed for approval
 		else
 		{	
 
-			// Get the driver id 
-			$requestuser_id=$_SESSION['id'];
-
 			// Insert the details entered by the user in the database
-			$query="INSERT INTO request(source,destination,passengers,date_time,requestuser_id) VALUES('".mysqli_real_escape_string($link,$_POST['source'])."','".mysqli_real_escape_string($link,$_POST['destination'])."','".mysqli_real_escape_string($link,$_POST['passengers'])."','".mysqli_real_escape_string($link,$_POST['date_time'])."','".mysqli_real_escape_string($link,$requestuser_id)."')";
+			$query1="INSERT INTO passengers(trip_id,num_passengers,passenger_id) VALUES('".mysqli_real_escape_string($link,$row1['trip_id'])."','".mysqli_real_escape_string($link,$_POST['passengers'])."','".mysqli_real_escape_string($link,$_SESSION['user_id'])."')";
+			mysqli_query($link, $query1);		
 
-			// Execute the query
-			mysqli_query($link,$query);
-			header("Location:user.php");
+			$query2="UPDATE `approvals` SET `status`='approved' WHERE `user_id`='".mysqli_real_escape_string($link,$_SESSION['user_id'])."' AND `driver_id`='".mysqli_real_escape_string($link,$_SESSION['driver_id'])."' AND `trip_id`='".mysqli_real_escape_string($link,$row1['trip_id'])."' AND `passengers`='".mysqli_real_escape_string($link,$_POST['passengers'])."'";
+			mysqli_query($link, $query2);
+
+			$free_spots=$_POST['freespots']-$_POST['passengers'];
+
+			$sql="UPDATE `trips` SET `free_spots`='".mysqli_real_escape_string($link,$free_spots)."' WHERE `trip_id`='".mysqli_real_escape_string($link,$row1['trip_id'])."'";
+			mysqli_query($link, $sql);		
+
+			header("Location:pending_approvals.php");
 		}
 	}
 

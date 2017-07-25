@@ -149,7 +149,7 @@ margin: 0;
      		<th style="text-align:center">Driver</th>
      		<th style="text-align:center">Contact</th>
      		<th style="text-align:center">Rating</th>
-     		<th style="text-align:center">Book</th>';
+     		<th style="text-align:center">Request Booking</th>';
 			$table.= '
       		</tr>
     		</thead>
@@ -176,7 +176,7 @@ margin: 0;
 				$table.= '<td style="text-align:center;">'.$driver.'</td>';
 				$table.= '<td style="text-align:center;">'.$contact.'</td>';
 				$table.= '<td style="text-align:center;">'.$rating.'</td>';
-				$table.= '<td style="text-align:center;"><a href="book.php?trip='.$trip_id.'" class="buttonize">Book</a></td>';
+				$table.= '<td style="text-align:center;"><a href="book.php?trip='.$trip_id.'" class="buttonize">Request</a></td>';
 
 			 	$table.= '</tr>';
 
