@@ -24,7 +24,6 @@ if(!isset($_SESSION['id'])){
 .borderround {
 	border:1px solid #DEDEDE;
 	border-radius: 10px;
-
 }
 .righticon {
 	float: right;
@@ -76,9 +75,7 @@ margin: 0;
 		<class="row">
 			<div class="col-md-6 col-md-offset-3 am" id="toprow">
 				<?php
-
 					echo '<h2>Hi, '.$_SESSION['name'].'! Welcome to Carpooling !!</h2>';
-
 				?>
 				<p class="lead">Edit Profile</p>
 				
@@ -116,5 +113,3 @@ margin: 0;
 		</div>
 </body>
 </html>
-
-

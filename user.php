@@ -104,6 +104,12 @@ margin: 0;
 				<input type="submit" name="submit" class="btn btn-success " value="Requested Trips"/>
 			</form>
 		</div>
+		<div class="border col-md-3">
+			<h3>My Trips/Approvals</h3>
+			<form class="navbar-form navbar-center" method="post">
+				<input type="submit" name="submit" class="btn btn-success " value="View"/>
+			</form>
+		</div>
 	</div>
 
 	<?php
@@ -123,6 +129,10 @@ margin: 0;
 	if($_POST['submit']=="Requested Trips")
 	{
 		header("Location:requested_trips.php");
+	}
+	if($_POST['submit']=="View")
+	{
+		header("Location:pending_approvals.php");
 	}
 
 	?>

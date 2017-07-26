@@ -105,15 +105,18 @@ margin: 0;
 	{
 
 		// Check if the user filled the source
-		if (!$_POST['source'])$error.="<br />Please enter starting point of trip";
+		if (!$_POST['source']) $error="<br />Please enter starting point of trip";
 
 		// Check if the user filled the destination
-		if (!$_POST['destination']) $error=$error."<br />Please enter ending point of trip";
+		if (!$_POST['destination']) $error="<br />Please enter ending point of trip";
 
 		// Check if any errors were encountered
 		if ($error)
-		$error="There were error(s) in creation of the trip:".$error;
+		{
+			$error="There were error(s) in search of the trip:".$error;
+			echo '<div class="alert alert-danger" style="text-align:center;">'.addslashes($error).'</div>';
 
+		}
 		// If no errors, proceed for registration
 		else
 		{	
@@ -145,12 +148,14 @@ margin: 0;
      		<th style="text-align:center">Date and Time</th>
      		<th style="text-align:center">Driver</th>
      		<th style="text-align:center">Contact</th>
-     		<th style="text-align:center">Rating</th>';
+     		<th style="text-align:center">Rating</th>
+     		<th style="text-align:center">Request Booking</th>';
 			$table.= '
       		</tr>
     		</thead>
     		<tbody>';
 
+			$id_number=1;	
 			while($row = mysqli_fetch_array($result))
 			{
 
@@ -160,6 +165,7 @@ margin: 0;
 				$freespots = $row['free_spots'];
 			 	$via = $row['via'];
 			 	$date_time = $row['date_time'];
+			 	$trip_id = $row['trip_id'];
 			 	$driver = $row1['name'];
 			 	$contact = $row1['contact'];
 			 	$rating = $row1['rating'];
@@ -170,12 +176,16 @@ margin: 0;
 				$table.= '<td style="text-align:center;">'.$driver.'</td>';
 				$table.= '<td style="text-align:center;">'.$contact.'</td>';
 				$table.= '<td style="text-align:center;">'.$rating.'</td>';
+				$table.= '<td style="text-align:center;"><a href="book.php?trip='.$trip_id.'" class="buttonize">Request</a></td>';
+
 			 	$table.= '</tr>';
+
+			 	$id_number+=1;
 			 }
 
 			    $table.= '
 			    </tbody>
-			  </table>';
+			 	</table>';
 				echo '</div>';
 				echo $table;
 

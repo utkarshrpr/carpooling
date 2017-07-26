@@ -1,8 +1,9 @@
 <?php
 	session_start();
-if(!isset($_SESSION['id'])){
-	header("Location:index.php");
-}
+	if(!isset($_SESSION['id']))
+	{
+		header("Location:index.php");
+	}
 ?>
 
 <!DOCTYPE html>
@@ -78,6 +79,9 @@ margin: 0;
 	<?php
 
 		echo '<h2>Hi, '.$_SESSION['name'].'! Welcome to Carpooling !!</h2>';
+		$query = "SELECT * FROM request WHERE request_id='".mysqli_real_escape_string($link,$_GET['request'])."'";
+		$result = mysqli_query($link,$query);
+		$row = mysqli_fetch_array($result);
 
 	?>
 
@@ -85,49 +89,40 @@ margin: 0;
 	  <form role="form" method="post">
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
             <label for="source">Source</label>
-            <input name="source" type="text" class="form-control" id="source" placeholder="Enter Starting Point of Trip">
+            <input readonly name="source" type="text" class="form-control" id="source" value="<?php echo $row['source']; ?>">
         </div>
+
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
             <label for="date_time">Date-Time of Trip</label>
-            <div class="input-group date form_datetime" data-date="1979-09-16T05:25:07Z" data-date-format="yyyy-mm-dd hh:ii:ss" data-link-field="dtp_input1">
-                <input class="form-control" name='date_time' size="16" type="text" value="" placeholder="Enter Date and Time of Trip">
-                <span class="input-group-addon btn btn-sm"><span class="glyphicon glyphicon-remove"></span></span>
-                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-            </div>
-                <input type="hidden" id="dtp_input1" value="" /><br/>
+            <input readonly name="date_time" type="text" class="form-control" id="date_time" value="<?php echo $row['date_time']; ?>">
+        </div>
+
+        <div class="clearfix"></div>
+        <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
+            <label for="via">Via</label>
+            <input name="via" type="text" class="form-control" id="via" placeholder="Enter a mid-point on your route">
         </div>
         <div class="clearfix"></div>
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
             <label for="destination">Destination</label>
-            <input name="destination" type="text" class="form-control" id="destination" placeholder="Enter Ending Point of Trip">
+            <input readonly name="destination" type="text" class="form-control" id="destination" value="<?php echo $row['destination']; ?>">
         </div>
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
-            <label for="passengers">Number of Passengers</label>
-            <input name="passengers" type="text" class="form-control" id="passengers" placeholder="Enter the Number of Passengers">
+            <label for="freespots">Number of Free Spots</label>
+            <input name="freespots" type="text" class="form-control" id="freespots" placeholder="Enter the Number of Free Spots">
         </div>
         <div class="clearfix"></div>
-        <input type="submit" name="submit" class="btn btn-success btn-bg margintop an" value="Request Trip" />
+        <input type="submit" name="submit" class="btn btn-success btn-bg margintop an" value="Create Trip" />
     </form>
     <div class="clearfix"></div>
-
     <br /><br />
 	</div>
 
 </div>
-<!-- This script is used for datetime-picker used in the date-time field -->
-<script type="text/javascript">
-	$(".form_datetime").datetimepicker({
-		format: "yyyy-mm-dd hh:ii:ss",
-		autoclose: true,
-		showMeridian: true,
-		todayBtn: true,
-		startDate: "+0d",
-		minuteStep: 10
-	});
-</script>
+
 <?php
 	
-	if($_POST['submit']=="Request Trip")
+	if($_POST['submit']=="Create Trip")
 	{
 
 		// Check if the user filled the source
@@ -136,16 +131,19 @@ margin: 0;
     	// Check if the user filled the date and time of trip
 		if (!$_POST['date_time']) $error="<br />Please enter date and time of trip";
 
+		// Check if the user filled a mid-point in the route
+		if (!$_POST['via']) $error="<br />Please enter a mid-point in the route";
+
 		// Check if the user filled the destination
 		if (!$_POST['destination']) $error="<br />Please enter ending point of trip";
 
 		// Check if the user filled the number of free spots
-		if (!$_POST['passengers']) $error="<br />Please enter the number of passengers";
+		if (!$_POST['freespots']) $error="<br />Please enter the number of free spots";
 
 		// Check if any errors were encountered
 		if ($error)
 		{
-			$error="There were error(s) in requesting the trip:".$error;
+			$error="There were error(s) in creation of the trip:".$error;
 			echo '<div class="alert alert-danger" style="text-align:center;">'.addslashes($error).'</div>';
 
 		}
@@ -155,14 +153,18 @@ margin: 0;
 		{	
 
 			// Get the driver id 
-			$requestuser_id=$_SESSION['id'];
+			$driver_id=$_SESSION['id'];
 
 			// Insert the details entered by the user in the database
-			$query="INSERT INTO request(source,destination,passengers,date_time,requestuser_id) VALUES('".mysqli_real_escape_string($link,$_POST['source'])."','".mysqli_real_escape_string($link,$_POST['destination'])."','".mysqli_real_escape_string($link,$_POST['passengers'])."','".mysqli_real_escape_string($link,$_POST['date_time'])."','".mysqli_real_escape_string($link,$requestuser_id)."')";
+			$query="INSERT INTO trips(source,destination,free_spots,via,date_time,driver_id) VALUES('".mysqli_real_escape_string($link,$_POST['source'])."','".mysqli_real_escape_string($link,$_POST['destination'])."','".mysqli_real_escape_string($link,$_POST['freespots'])."','".mysqli_real_escape_string($link,$_POST['via'])."','".mysqli_real_escape_string($link,$_POST['date_time'])."','".mysqli_real_escape_string($link,$driver_id)."')";
 
 			// Execute the query
 			mysqli_query($link,$query);
-			header("Location:user.php");
+
+			$query1="DELETE FROM `request` WHERE `request_id`='".mysqli_real_escape_string($link,$_GET['request'])."'";
+			mysqli_query($link,$query1);
+
+			header("Location:requested_trips.php");
 		}
 	}
 

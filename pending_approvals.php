@@ -83,9 +83,13 @@ margin: 0;
 </div>
 
 <?php 
-
-	// Get all the trips between source and destination
-	$query="SELECT * FROM request";
+	
+	$message="My Approvals";
+	echo '<div class="container">
+ 			<h4>'.$message.'</h4>
+  			<hr> 
+ 			</div>'; 
+	$query="SELECT * FROM approvals WHERE driver_id='".mysqli_real_escape_string($link,$_SESSION['id'])."'";
 
 	echo "<br>";
 	
@@ -96,13 +100,14 @@ margin: 0;
 	$table = '<table class="table table-striped">
 	<thead>
 		<tr>
-		<th style="text-align:center">User</th>
-		<th style="text-align:center">Rating</th>
+		<th style="text-align:center">Booked By</th>
+		<th style="text-align:center">User Rating</th>
 		<th style="text-align:center">Source</th>
 		<th style="text-align:center">Destination</th>
 		<th style="text-align:center">Date and Time</th>
 		<th style="text-align:center">Number of Passengers</th>
-		<th style="text-align:center">Create</th>';
+		<th style="text-align:center">Free Spots</th>
+		<th style="text-align:center">Status/Approve/Reject</th>';
 	$table.= '
 		</tr>
 	</thead>
@@ -111,17 +116,24 @@ margin: 0;
 	$id_number=1;
 	while($row = mysqli_fetch_array($result))
 	{
-
-		$query1="SELECT * FROM user WHERE user_id='".mysqli_real_escape_string($link,$row['requestuser_id'])."'";
+		$query1="SELECT * FROM user WHERE user_id='".mysqli_real_escape_string($link,$row['user_id'])."'";
 		$result1=mysqli_query($link,$query1);
 		$row1=mysqli_fetch_array($result1);
+		$query2="SELECT * FROM trips WHERE trip_id='".mysqli_real_escape_string($link,$row['trip_id'])."'";
+		$result2=mysqli_query($link,$query2);
+		$row2=mysqli_fetch_array($result2);
 		$passengers = $row['passengers'];
-	 	$source = $row['source'];
-	 	$destination = $row['destination'];
-	 	$date_time = $row['date_time'];
-	 	$request_id = $row['request_id'];
+	 	$source = $row2['source'];
+	 	$destination = $row2['destination'];
+	 	$date_time = $row2['date_time'];
 	 	$user = $row1['name'];
 	 	$rating = $row1['rating'];
+	 	$free_spots = $row2['free_spots'];
+
+	 	$_SESSION['trip_id']=$row['trip_id'];
+	 	$_SESSION['user_id']=$row['user_id'];
+	 	$_SESSION['driver_id']=$_SESSION['id'];
+	 	$_SESSION['passengers']=$row['passengers'];
 
 		$table.= '<tr id="'.$id_number.'"><td style="text-align:center;">'.$user.'</td>';
 		$table.= '<td style="text-align:center;">'.$rating.'</td>';
@@ -129,7 +141,11 @@ margin: 0;
 		$table.= '<td style="text-align:center;">'.$destination.'</td>';
 		$table.= '<td style="text-align:center;">'.$date_time.'</td>';
 		$table.= '<td style="text-align:center;">'.$passengers.'</td>';
-		$table.= '<td style="text-align:center;"><a href="create_requested.php?request='.$request_id.'" class="buttonize">Create</a></td>';
+		$table.= '<td style="text-align:center;">'.$free_spots.'</td>';
+		if($row['status']=='pending')
+			$table.= '<td style="text-align:center;"><a href="approve.php" class="buttonize">Approve</a>/<a href="reject.php" class="buttonize">Reject</a></td>';
+		else
+			$table.= '<td style="text-align:center;">'.ucfirst($row['status']).'</td>';
 	 	$table.= '</tr>';
 
 	 	$id_number+=1;
@@ -141,6 +157,52 @@ margin: 0;
 		echo '</div>';
 		echo $table;
 
+?>
+
+<?php 
+	
+	$message="My Trips";
+	echo '<div class="container">
+ 			<h4>'.$message.'</h4>
+  			<hr> 
+ 			</div>'; 
+	$query="SELECT * FROM trips WHERE driver_id='".mysqli_real_escape_string($link,$_SESSION['id'])."'";
+
+	echo "<br>";
+	
+	// Execute the query and store the result
+	$result=mysqli_query($link,$query);
+
+	echo '<div class="col-md-2 col-md-offset-8">';
+	$table = '<table class="table table-striped">
+	<thead>
+		<tr>
+		<th style="text-align:center">Source</th>
+		<th style="text-align:center">Via</th>
+		<th style="text-align:center">Destination</th>
+		<th style="text-align:center">Date and Time</th>
+		<th style="text-align:center">Free Spots</th>';
+	$table.= '
+		</tr>
+	</thead>
+	<tbody>';
+
+	while($row = mysqli_fetch_array($result))
+	{
+
+		$table.= '<td style="text-align:center;">'.$row['source'].'</td>';
+		$table.= '<td style="text-align:center;">'.$row['via'].'</td>';
+		$table.= '<td style="text-align:center;">'.$row['destination'].'</td>';
+		$table.= '<td style="text-align:center;">'.$row['date_time'].'</td>';
+		$table.= '<td style="text-align:center;">'.$row['free_spots'].'</td>';
+		$table.= '</tr>';
+	 }
+
+	    $table.= '
+	    </tbody>
+	  	</table>';
+		echo '</div>';
+		echo $table;
 
 ?>
 
