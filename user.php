@@ -110,6 +110,18 @@ margin: 0;
 				<input type="submit" name="submit" class="btn btn-success " value="View"/>
 			</form>
 		</div>
+		<div class="border col-md-3">
+			<h3>Rate Drivers</h3>
+			<form class="navbar-form navbar-center" method="post">
+				<input type="submit" name="submit" class="btn btn-success " value="Rate Drivers"/>
+			</form>
+		</div>
+		<div class="border col-md-3">
+			<h3>Rate Passengers</h3>
+			<form class="navbar-form navbar-center" method="post">
+				<input type="submit" name="submit" class="btn btn-success " value="Rate Passengers"/>
+			</form>
+		</div>
 	</div>
 
 	<?php
@@ -133,6 +145,14 @@ margin: 0;
 	if($_POST['submit']=="View")
 	{
 		header("Location:pending_approvals.php");
+	}
+	if($_POST['submit']=="Rate Drivers")
+	{
+		header("Location:rate_drivers.php");
+	}
+	if($_POST['submit']=="Rate Passengers")
+	{
+		header("Location:rate_passengers.php");
 	}
 
 	?>

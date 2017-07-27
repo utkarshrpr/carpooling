@@ -130,10 +130,7 @@ margin: 0;
 	 	$rating = $row1['rating'];
 	 	$free_spots = $row2['free_spots'];
 
-	 	$_SESSION['trip_id']=$row['trip_id'];
-	 	$_SESSION['user_id']=$row['user_id'];
 	 	$_SESSION['driver_id']=$_SESSION['id'];
-	 	$_SESSION['passengers']=$row['passengers'];
 
 		$table.= '<tr id="'.$id_number.'"><td style="text-align:center;">'.$user.'</td>';
 		$table.= '<td style="text-align:center;">'.$rating.'</td>';
@@ -142,8 +139,11 @@ margin: 0;
 		$table.= '<td style="text-align:center;">'.$date_time.'</td>';
 		$table.= '<td style="text-align:center;">'.$passengers.'</td>';
 		$table.= '<td style="text-align:center;">'.$free_spots.'</td>';
+		$approve_url="approve.php?trip_id=".$row['trip_id']."&user_id=".$row['user_id']."&passengers=".$row['passengers'];
+		$reject_url="reject.php?trip_id=".$row['trip_id']."&user_id=".$row['user_id']."&passengers=".$row['passengers'];
+
 		if($row['status']=='pending')
-			$table.= '<td style="text-align:center;"><a href="approve.php" class="buttonize">Approve</a>/<a href="reject.php" class="buttonize">Reject</a></td>';
+			$table.= '<td style="text-align:center;"><a href='.$approve_url.' class="buttonize">Approve</a>/<a href='.$reject_url.' class="buttonize">Reject</a></td>';
 		else
 			$table.= '<td style="text-align:center;">'.ucfirst($row['status']).'</td>';
 	 	$table.= '</tr>';
@@ -166,12 +166,12 @@ margin: 0;
  			<h4>'.$message.'</h4>
   			<hr> 
  			</div>'; 
-	$query="SELECT * FROM trips WHERE driver_id='".mysqli_real_escape_string($link,$_SESSION['id'])."'";
+	$queryx="SELECT * FROM trips WHERE driver_id='".mysqli_real_escape_string($link,$_SESSION['id'])."'";
 
 	echo "<br>";
 	
 	// Execute the query and store the result
-	$result=mysqli_query($link,$query);
+	$resultx=mysqli_query($link,$queryx);
 
 	echo '<div class="col-md-2 col-md-offset-8">';
 	$table = '<table class="table table-striped">
@@ -187,14 +187,14 @@ margin: 0;
 	</thead>
 	<tbody>';
 
-	while($row = mysqli_fetch_array($result))
+	while($rowx = mysqli_fetch_array($resultx))
 	{
 
-		$table.= '<td style="text-align:center;">'.$row['source'].'</td>';
-		$table.= '<td style="text-align:center;">'.$row['via'].'</td>';
-		$table.= '<td style="text-align:center;">'.$row['destination'].'</td>';
-		$table.= '<td style="text-align:center;">'.$row['date_time'].'</td>';
-		$table.= '<td style="text-align:center;">'.$row['free_spots'].'</td>';
+		$table.= '<td style="text-align:center;">'.$rowx['source'].'</td>';
+		$table.= '<td style="text-align:center;">'.$rowx['via'].'</td>';
+		$table.= '<td style="text-align:center;">'.$rowx['destination'].'</td>';
+		$table.= '<td style="text-align:center;">'.$rowx['date_time'].'</td>';
+		$table.= '<td style="text-align:center;">'.$rowx['free_spots'].'</td>';
 		$table.= '</tr>';
 	 }
 
