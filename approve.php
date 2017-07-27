@@ -79,10 +79,10 @@ margin: 0;
 	<?php
 
 		echo '<h2>Hi, '.$_SESSION['name'].'! Welcome to Carpooling !!</h2>';
-		$query1 = "SELECT * FROM trips WHERE trip_id='".mysqli_real_escape_string($link,$_SESSION['trip_id'])."'";
+		$query1 = "SELECT * FROM trips WHERE trip_id='".mysqli_real_escape_string($link,$_GET['trip_id'])."'";
 		$result1 = mysqli_query($link,$query1);
 		$row1 = mysqli_fetch_array($result1);
-		$query2 = "SELECT name FROM user WHERE user_id='".mysqli_real_escape_string($link,$_SESSION['user_id'])."'";
+		$query2 = "SELECT name FROM user WHERE user_id='".mysqli_real_escape_string($link,$_GET['user_id'])."'";
 		$result2 = mysqli_query($link,$query2);
 		$row2 = mysqli_fetch_array($result2);
 
@@ -105,7 +105,7 @@ margin: 0;
         </div>
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
             <label for="passengers">Number of Passengers</label>
-            <input readonly name="passengers" type="text" class="form-control" id="passengers" value="<?php echo $_SESSION['passengers']; ?>">
+            <input readonly name="passengers" type="text" class="form-control" id="passengers" value="<?php echo $_GET['passengers']; ?>">
         </div>
         <div class="clearfix"></div>
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
@@ -128,7 +128,7 @@ margin: 0;
 	
 	if($_POST['submit']=="Approve")
 	{
-
+		
 		// Check if the user filled the source
 		if (!$_POST['source']) $error="<br />Please enter starting point of trip";
 
@@ -162,10 +162,10 @@ margin: 0;
 		{	
 
 			// Insert the details entered by the user in the database
-			$query1="INSERT INTO passengers(trip_id,num_passengers,passenger_id) VALUES('".mysqli_real_escape_string($link,$row1['trip_id'])."','".mysqli_real_escape_string($link,$_POST['passengers'])."','".mysqli_real_escape_string($link,$_SESSION['user_id'])."')";
+			$query1="INSERT INTO passengers(trip_id,num_passengers,passenger_id) VALUES('".mysqli_real_escape_string($link,$row1['trip_id'])."','".mysqli_real_escape_string($link,$_POST['passengers'])."','".mysqli_real_escape_string($link,$_GET['user_id'])."')";
 			mysqli_query($link, $query1);		
 
-			$query2="UPDATE `approvals` SET `status`='approved' WHERE `user_id`='".mysqli_real_escape_string($link,$_SESSION['user_id'])."' AND `driver_id`='".mysqli_real_escape_string($link,$_SESSION['driver_id'])."' AND `trip_id`='".mysqli_real_escape_string($link,$row1['trip_id'])."' AND `passengers`='".mysqli_real_escape_string($link,$_POST['passengers'])."'";
+			$query2="UPDATE `approvals` SET `status`='approved' WHERE `user_id`='".mysqli_real_escape_string($link,$_GET['user_id'])."' AND `driver_id`='".mysqli_real_escape_string($link,$_SESSION['driver_id'])."' AND `trip_id`='".mysqli_real_escape_string($link,$row1['trip_id'])."' AND `passengers`='".mysqli_real_escape_string($link,$_POST['passengers'])."'";
 			mysqli_query($link, $query2);
 
 			$free_spots=$_POST['freespots']-$_POST['passengers'];

@@ -24,6 +24,7 @@ if(!isset($_SESSION['id'])){
 .borderround {
 	border:1px solid #DEDEDE;
 	border-radius: 10px;
+
 }
 .righticon {
 	float: right;
@@ -75,7 +76,13 @@ margin: 0;
 		<class="row">
 			<div class="col-md-6 col-md-offset-3 am" id="toprow">
 				<?php
+
 					echo '<h2>Hi, '.$_SESSION['name'].'! Welcome to Carpooling !!</h2>';
+					$user_id=$_SESSION['id'];
+					$query="SELECT * FROM user WHERE user_id='".mysqli_real_escape_string($link,$user_id)."'";
+					$result=mysqli_query($link,$query);
+					$row=mysqli_fetch_array($result);
+
 				?>
 				<p class="lead">Edit Profile</p>
 				
@@ -84,14 +91,14 @@ margin: 0;
 					<div class="input-group">
 						
 						<span class="input-group-addon glyphicon glyphicon-user"></span>
-						<input type="name" name="name" class="form-control" placeholder="Your Name"/>
+						<input type="name" name="name" class="form-control" value="<?php echo $row['name']; ?>">
 					</div>
 					
 					<label for="contact">Contact</label>
 					<div class="input-group">
 						
 						<span class="input-group-addon glyphicon glyphicon-phone"></span>
-						<input type="text" name="contact" class="form-control" placeholder="Your Contact Number"/>
+						<input type="text" name="contact" class="form-control" value="<?php echo $row['contact']; ?>">
 					</div>
 
 					<label for="password">Password</label>
@@ -111,5 +118,53 @@ margin: 0;
 				</form>
 			</div>
 		</div>
+
+<?php
+	
+	if($_POST['submit']=="Edit Profile")
+	{
+
+
+		// Check if the user entered the name
+		if (!$_POST['name']) $error="<br />Please enter your name";
+
+		// Check if the user filled an invalid name
+		if (strlen($_POST['name'])>0 && strlen(trim($_POST['name']))==0) $error="<br />Please enter a valid name";
+
+    	// Check if the user filled an invalid contact number
+		if (!is_numeric($_POST['contact'])) $error="<br />Please enter a valid contact number";
+
+		// Check if the user entered the password
+		if (!$_POST['password']) $error="<br />Please enter your password";
+
+		// Check if the user filled an invalid password
+		if (strlen($_POST['password'])>0 && strlen(trim($_POST['password']))==0) $error="<br />Please enter a valid password";
+
+		// Check if the passwords match
+		if ($_POST['password']!=$_POST['repassword']) $error="<br />Passwords do not match";
+
+		// Check if any errors were encountered
+		if ($error)
+		{
+			$error="There were error(s) in editing your profile:".$error;
+			echo '<div class="alert alert-danger" style="text-align:center;">'.addslashes($error).'</div>';
+
+		}
+
+		// If no errors, proceed for registration
+		else
+		{	
+			$_SESSION['name']=$_POST['name'];
+			$sql="UPDATE `user` SET `name`='".mysqli_real_escape_string($link,$_POST['name'])."', `contact`='".mysqli_real_escape_string($link,$_POST['contact'])."', `password`='".mysqli_real_escape_string($link,$_POST['password'])."' WHERE `user_id`='".mysqli_real_escape_string($link,$row['user_id'])."'";
+			mysqli_query($link, $sql);		
+
+			header("Location:user.php");
+		}
+	}
+
+?>
+
 </body>
 </html>
+
+

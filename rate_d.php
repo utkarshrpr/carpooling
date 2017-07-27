@@ -82,7 +82,8 @@ margin: 0;
 		$query1 = "SELECT * FROM trips WHERE trip_id='".mysqli_real_escape_string($link,$_GET['trip_id'])."'";
 		$result1 = mysqli_query($link,$query1);
 		$row1 = mysqli_fetch_array($result1);
-		$query2 = "SELECT name FROM user WHERE user_id='".mysqli_real_escape_string($link,$_GET['user_id'])."'";
+
+		$query2 = "SELECT name FROM user WHERE user_id='".mysqli_real_escape_string($link,$_GET['user'])."'";
 		$result2 = mysqli_query($link,$query2);
 		$row2 = mysqli_fetch_array($result2);
 
@@ -104,19 +105,26 @@ margin: 0;
             <input readonly name="destination" type="text" class="form-control" id="destination" value="<?php echo $row1['destination']; ?>">
         </div>
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
-            <label for="passengers">Number of Passengers</label>
-            <input readonly name="passengers" type="text" class="form-control" id="passengers" value="<?php echo $_GET['passengers']; ?>">
+            <label for="via">Via</label>
+            <input readonly name="via" type="text" class="form-control" id="via" value="<?php echo $row1['via']; ?>">
         </div>
         <div class="clearfix"></div>
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
-            <label for="user">Booked By</label>
+            <label for="user">Driver</label>
             <input readonly name="user" type="text" class="form-control" id="user" value="<?php echo $row2['name']; ?>">
         </div>
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
-            <label for="freespots">Free Spots</label>
-            <input readonly name="freespots" type="text" class="form-control" id="freespots" value="<?php echo $row1['free_spots']; ?>">
+            <label for="rating">Rate Driver</label>
+      			<select class="form-control" id="rating" name="rating">
+      			<option value="" selected hidden></option>
+		        <option>1</option>
+		        <option>2</option>
+		        <option>3</option>
+		        <option>4</option>
+		        <option>5</option>
+		      </select>
         </div>
-        <input type="submit" name="submit" class="btn btn-success btn-bg margintop an" value="Reject" />
+        <input type="submit" name="submit" class="btn btn-success btn-bg margintop an" value="Rate" />
     </form>
     <div class="clearfix"></div>
     <br /><br />
@@ -126,9 +134,9 @@ margin: 0;
 
 <?php
 	
-	if($_POST['submit']=="Reject")
+	if($_POST['submit']=="Rate")
 	{
-
+		
 		// Check if the user filled the source
 		if (!$_POST['source']) $error="<br />Please enter starting point of trip";
 
@@ -142,7 +150,10 @@ margin: 0;
 		if (!$_POST['destination']) $error="<br />Please enter ending point of trip";
 
 		// Check if the user filled the number of passengers
-		if (!$_POST['passengers']) $error="<br />Please enter the number of passengers";
+		if (!$_POST['via']) $error="<br />Please enter the mid-point of the trip";
+
+		// Check if the user filled the number of free spots
+		if (!$_POST['rating'] or $_POST['rating']=="") $error="<br />Please enter the rating";
 
 		// Check if any errors were encountered
 		if ($error)
@@ -152,14 +163,32 @@ margin: 0;
 
 		}
 
-		// If no errors, proceed for rejection
+		// If no errors, proceed for approval
 		else
-		{			
+		{	
 
-			$query2="UPDATE `approvals` SET `status`='rejected' WHERE `user_id`='".mysqli_real_escape_string($link,$_GET['user_id'])."' AND `driver_id`='".mysqli_real_escape_string($link,$_SESSION['driver_id'])."' AND `trip_id`='".mysqli_real_escape_string($link,$row1['trip_id'])."' AND `passengers`='".mysqli_real_escape_string($link,$_POST['passengers'])."'";
-			mysqli_query($link, $query2);	
+			// Insert the details entered by the user in the database
+			$query1="INSERT INTO rating(trip_id,rated_uid,rating_uid,rating) VALUES('".mysqli_real_escape_string($link,$_GET['trip_id'])."','".mysqli_real_escape_string($link,$_GET['user'])."','".mysqli_real_escape_string($link,$_SESSION['id'])."','".mysqli_real_escape_string($link,$_POST['rating'])."')";
+			mysqli_query($link, $query1);		
 
-			header("Location:pending_approvals.php");
+			$query2="SELECT rating FROM rating WHERE rated_uid='".mysqli_real_escape_string($link,$_GET['user'])."'";
+			$result2 = mysqli_query($link,$query2);
+			$total_rating=0;
+			$count=0;
+			while($row2 = mysqli_fetch_array($result2))
+			{
+				$total_rating+=$row2['rating'];
+				$count+=1;
+			}
+			if($count!=0)
+			{
+				$avg_rating=$total_rating/$count;
+
+				$sql = "UPDATE user SET rating='".mysqli_real_escape_string($link,$avg_rating)."' WHERE user_id='".mysqli_real_escape_string($link,$_GET['user'])."'";
+				mysqli_query($link,$sql); 
+			}
+
+			header("Location:rate_drivers.php");
 		}
 	}
 
