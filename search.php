@@ -77,7 +77,8 @@ margin: 0;
 	<?php
 
 		echo '<h2>Hi, '.$_SESSION['name'].'! Welcome to Carpooling !!</h2>';
-
+		date_default_timezone_set("Asia/Kolkata");
+		$current_date=date("Y-m-d H:i:s");
 	?>
 
 	<div class="row">
@@ -132,7 +133,7 @@ margin: 0;
 			// Execute the query and store the result
 			$result=mysqli_query($link,$query);
 
-			$message='Trips from '.$_POST['source'].' to '.$_POST['destination'];
+			$message='Upcoming Trips from '.$_POST['source'].' to '.$_POST['destination'];
 
 			echo '<div class="container">
  			<h4>'.$message.'</h4>
@@ -170,17 +171,23 @@ margin: 0;
 			 	$contact = $row1['contact'];
 			 	$rating = $row1['rating'];
 
-				$table.= '<tr><td style="text-align:center;">'.$freespots.'</td>';
-				$table.= '<td style="text-align:center;">'.$via.'</td>';
-				$table.= '<td style="text-align:center;">'.$date_time.'</td>';
-				$table.= '<td style="text-align:center;">'.$driver.'</td>';
-				$table.= '<td style="text-align:center;">'.$contact.'</td>';
-				$table.= '<td style="text-align:center;">'.$rating.'</td>';
-				$table.= '<td style="text-align:center;"><a href="book.php?trip='.$trip_id.'" class="buttonize">Request</a></td>';
+			 	if($current_date>$date_time)
+			 		continue;
 
-			 	$table.= '</tr>';
+			 	else
+			 	{
+					$table.= '<tr><td style="text-align:center;">'.$freespots.'</td>';
+					$table.= '<td style="text-align:center;">'.$via.'</td>';
+					$table.= '<td style="text-align:center;">'.$date_time.'</td>';
+					$table.= '<td style="text-align:center;">'.$driver.'</td>';
+					$table.= '<td style="text-align:center;">'.$contact.'</td>';
+					$table.= '<td style="text-align:center;">'.$rating.'</td>';
+					$table.= '<td style="text-align:center;"><a href="book.php?trip='.$trip_id.'" class="buttonize">Request</a></td>';
 
-			 	$id_number+=1;
+				 	$table.= '</tr>';
+
+				 	$id_number+=1;
+			 	}
 			 }
 
 			    $table.= '
