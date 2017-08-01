@@ -161,7 +161,7 @@ margin: 0;
 			$query1="INSERT INTO approvals(trip_id,user_id,driver_id,passengers) VALUES('".mysqli_real_escape_string($link,$row['trip_id'])."','".mysqli_real_escape_string($link,$passenger_id)."','".mysqli_real_escape_string($link,$row['driver_id'])."','".mysqli_real_escape_string($link,$_POST['passengers'])."')";
 
 			// Execute the query
-			mysqli_query($link,$query1);	
+			mysqli_query($link,$query1);
 
 			header("Location:user.php");
 		}

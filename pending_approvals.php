@@ -77,6 +77,8 @@ margin: 0;
 	<?php
 
 		echo '<h2>Hi, '.$_SESSION['name'].'! Welcome to Carpooling !!</h2>';
+		date_default_timezone_set("Asia/Kolkata");
+		$current_date=date("Y-m-d H:i:s");
 
 	?>
 
@@ -143,7 +145,16 @@ margin: 0;
 		$reject_url="reject.php?trip_id=".$row['trip_id']."&user_id=".$row['user_id']."&passengers=".$row['passengers'];
 
 		if($row['status']=='pending')
-			$table.= '<td style="text-align:center;"><a href='.$approve_url.' class="buttonize">Approve</a>/<a href='.$reject_url.' class="buttonize">Reject</a></td>';
+		{
+			if($current_date<$date_time)
+			{
+				$table.= '<td style="text-align:center;"><a href='.$approve_url.' class="buttonize">Approve</a>/<a href='.$reject_url.' class="buttonize">Reject</a></td>';
+			}
+			else
+			{
+				$table.= '<td style="text-align:center;">Approval Pending and Trip Completed</td>';
+			}
+		}
 		else
 			$table.= '<td style="text-align:center;">'.ucfirst($row['status']).'</td>';
 	 	$table.= '</tr>';
@@ -194,7 +205,14 @@ margin: 0;
 		$table.= '<td style="text-align:center;">'.$rowx['via'].'</td>';
 		$table.= '<td style="text-align:center;">'.$rowx['destination'].'</td>';
 		$table.= '<td style="text-align:center;">'.$rowx['date_time'].'</td>';
-		$table.= '<td style="text-align:center;">'.$rowx['free_spots'].'</td>';
+		if($current_date<$rowx['date_time'])
+		{
+			$table.= '<td style="text-align:center;">'.$rowx['free_spots'].'</td>';
+		}
+		else
+		{
+			$table.= '<td style="text-align:center;">Trip Completed</td>';
+		}
 		$table.= '</tr>';
 	 }
 

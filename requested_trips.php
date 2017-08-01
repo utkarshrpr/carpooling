@@ -77,7 +77,8 @@ margin: 0;
 	<?php
 
 		echo '<h2>Hi, '.$_SESSION['name'].'! Welcome to Carpooling !!</h2>';
-
+		date_default_timezone_set("Asia/Kolkata");
+		$current_date=date("Y-m-d H:i:s");
 	?>
 
 </div>
@@ -123,16 +124,22 @@ margin: 0;
 	 	$user = $row1['name'];
 	 	$rating = $row1['rating'];
 
-		$table.= '<tr id="'.$id_number.'"><td style="text-align:center;">'.$user.'</td>';
-		$table.= '<td style="text-align:center;">'.$rating.'</td>';
-		$table.= '<td style="text-align:center;">'.$source.'</td>';
-		$table.= '<td style="text-align:center;">'.$destination.'</td>';
-		$table.= '<td style="text-align:center;">'.$date_time.'</td>';
-		$table.= '<td style="text-align:center;">'.$passengers.'</td>';
-		$table.= '<td style="text-align:center;"><a href="create_requested.php?request='.$request_id.'" class="buttonize">Create</a></td>';
-	 	$table.= '</tr>';
+	 	if($current_date>$date_time)
+	 		continue;
 
-	 	$id_number+=1;
+	 	else
+	 	{
+			$table.= '<tr id="'.$id_number.'"><td style="text-align:center;">'.$user.'</td>';
+			$table.= '<td style="text-align:center;">'.$rating.'</td>';
+			$table.= '<td style="text-align:center;">'.$source.'</td>';
+			$table.= '<td style="text-align:center;">'.$destination.'</td>';
+			$table.= '<td style="text-align:center;">'.$date_time.'</td>';
+			$table.= '<td style="text-align:center;">'.$passengers.'</td>';
+			$table.= '<td style="text-align:center;"><a href="create_requested.php?request='.$request_id.'" class="buttonize">Create</a></td>';
+		 	$table.= '</tr>';
+
+		 	$id_number+=1;
+		}
 	 }
 
 	    $table.= '
