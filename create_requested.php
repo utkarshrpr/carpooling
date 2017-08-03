@@ -86,7 +86,7 @@ margin: 0;
 	?>
 
 	<div class="row">
-	  <form role="form" method="post">
+	  <form id="routeForm "role="form" method="post">
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
             <label for="source">Source</label>
             <input readonly name="source" type="text" class="form-control" id="source" value="<?php echo $row['source']; ?>">
@@ -119,8 +119,52 @@ margin: 0;
 	</div>
 
 </div>
-
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyB82qWTjFYGu9xkvmWGFIkpcXnOjmwO6hM&sensor=false&libraries=places"></script>
+<script type="text/javascript">
+    google.maps.event.addDomListener(window, 'load', function () {
+    	var source = new google.maps.places.Autocomplete(document.getElementById('source'));
+    	var via = new google.maps.places.Autocomplete(document.getElementById('via'));
+    	var destination = new google.maps.places.Autocomplete(document.getElementById('destination'));
+    });
+</script>
+<!-- This script is used for datetime-picker used in the date-time field -->
+<script type="text/javascript">
+	$(".form_datetime").datetimepicker({
+		format: "yyyy-mm-dd hh:ii:ss",
+		autoclose: true,
+		showMeridian: true,
+		todayBtn: true,
+		startDate: "+0d",
+		minuteStep: 10
+	});
+		// prevents form submition on pressing enter
+	$('#routeForm').on('keyup keypress', function(e) {
+	  var keyCode = e.keyCode || e.which;
+	  if (keyCode === 13) { 
+	    e.preventDefault();
+	    return false;
+	  }
+	});
+</script>
 <?php
+
+	function redirect($url)
+	{
+    	if (!headers_sent())
+    	{    
+      	  header('Location: '.$url);
+       	 exit;
+        }
+    	else
+    	{  
+    		echo '<script type="text/javascript">';
+       		echo 'window.location.href="'.$url.'";';
+        	echo '</script>';
+       		echo '<noscript>';
+	        echo '<meta http-equiv="refresh" content="0;url='.$url.'" />';
+	        echo '</noscript>'; exit;
+    	}
+	}
 	
 	if($_POST['submit']=="Create Trip")
 	{
@@ -164,7 +208,20 @@ margin: 0;
 			$query1="DELETE FROM `request` WHERE `request_id`='".mysqli_real_escape_string($link,$_GET['request'])."'";
 			mysqli_query($link,$query1);
 
-			header("Location:requested_trips.php");
+			$sql = "SELECT name,email FROM user WHERE user_id='".mysqli_real_escape_string($link,$row['requestuser_id'])."'";
+			$resultsql = mysqli_query($link,$sql);
+			$rowsql = mysqli_fetch_array($resultsql);
+
+			$to = $rowsql['email'];
+			$subject = "Requested Trip Created to ".$_POST['destination'];
+			$txt = "Hello ".$rowsql['name'].","."\r\n";
+			$txt.= $_SESSION['name']." has created the following trip requested by you:"."\r\n";
+			$txt.= "Source: ".$_POST['source']."\r\n"."Destination: ".$_POST['destination']."\r\n"."Date-Time: ".$_POST['date_time']."\r\n"."Free Spots: ".$_POST['freespots']."\r\n"."You can book this trip by logging into this account !!";
+			$headers = "From: utkarshchauhan007@gmail.com";
+
+			mail($to,$subject,$txt,$headers);
+
+			redirect("requested_trips.php");
 		}
 	}
 

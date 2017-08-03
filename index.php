@@ -131,6 +131,7 @@ body {
 				
 				
 				<p class="bold margintop" >Not a member? Sign Up below!</p>
+				<p class="bold margintop" >After registering, check your email for further instructions !!</p>
 				<form class="margintop" method="post">
 					<label for="name">Name</label>
 					<div class="input-group">
@@ -152,11 +153,11 @@ body {
 						<span class="input-group-addon">&#64;</span>
 						<input type="email" name="email" class="form-control" placeholder="Your Email"/>
 					</div>
-					<label for="password">Password</label>
+					<!-- <label for="password">Password</label>
 					<div class="input-group">
 						<span class="input-group-addon glyphicon glyphicon-lock"></span>
 						<input type="password" name="password" class="form-control" placeholder="Your Password"/>
-					</div>
+					</div> -->
 					
 					<input type="submit" name="submit" class="btn btn-success btn-bg margintop an" value="Register" />
 				</form>

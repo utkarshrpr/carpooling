@@ -163,6 +163,18 @@ margin: 0;
 			// Execute the query
 			mysqli_query($link,$query1);
 
+			$sql = "SELECT name,email FROM user WHERE user_id='".mysqli_real_escape_string($link,$row['driver_id'])."'";
+			$resultsql = mysqli_query($link,$sql);
+			$rowsql = mysqli_fetch_array($resultsql);
+
+			$to = $rowsql['email'];
+			$subject = "New booking request for your trip to ".$_POST['destination'];
+			$txt = "Hello ".$rowsql['name'].","."\r\n";
+			$txt.= $_SESSION['name']." has requested a booking for the following trip:"."\r\n";
+			$txt.= "Source: ".$_POST['source']."\r\n"."Destination: ".$_POST['destination']."\r\n"."Date-Time: ".$_POST['date_time']."\r\n"."Number of Passengers: ".$_POST['passengers']."\r\n"."Open My Trips/Approvals to approve/reject this request !!";
+			$headers = "From: utkarshchauhan007@gmail.com";
+
+			mail($to,$subject,$txt,$headers);
 			header("Location:user.php");
 		}
 	}

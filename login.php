@@ -42,8 +42,8 @@
     	// Check if the user filled the name field
 		if (!$_POST['name']) $error=$error."<br />Please enter your name";
 
-		// Check if the user filled the password field
-		if (!$_POST['password']) $error=$error."<br />Please enter your password";
+		// // Check if the user filled the password field
+		// if (!$_POST['password']) $error=$error."<br />Please enter your password";
 
 		// Check if any errors were encountered
 		if ($error)
@@ -68,14 +68,32 @@
 			// If not registered, continue with the registration
 			else
 			{
+				$password = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"), -7);
+				$dup_password=$password;
 
-				// Insert the details entered by the user in the database
-				$query="INSERT INTO user (name,email,contact,password) VALUES('".mysqli_real_escape_string($link,$_POST['name'])."','".mysqli_real_escape_string($link,$_POST['email'])."','".mysqli_real_escape_string($link,$_POST['contact'])."','".mysqli_real_escape_string($link,$_POST['password'])."')";
-				// Execute the query
-				mysqli_query($link,$query);
+				$to = $_POST['email'];
+				$subject = "Confirm registration for Carpooling";
+				$txt = "Hello ".$_POST['name'].","."\r\n";
+				$txt.= "Your password is: ".$dup_password."\r\n";
+				$txt.= "Kindly change it by logging in and editing your profile from Edit Profile section.";
+				$headers = "From: utkarshchauhan007@gmail.com";
+				
+				if(@mail($to,$subject,$txt,$headers))
+				{
+					// Insert the details entered by the user in the database
+					$query="INSERT INTO user (name,email,contact,password) VALUES('".mysqli_real_escape_string($link,$_POST['name'])."','".mysqli_real_escape_string($link,$_POST['email'])."','".mysqli_real_escape_string($link,$_POST['contact'])."','".mysqli_real_escape_string($link,md5($password))."')";
+					// Execute the query
+					mysqli_query($link,$query);
 
-				// Store the id used in the query as session id
-				$_SESSION['id']=mysqli_insert_id($link);
+					// Store the id used in the query as session id
+					$_SESSION['id']=mysqli_insert_id($link);
+					header("Location:index.php");
+				}
+				else
+				{
+					$error="There was an error in sending the email. Please try again later !!";
+					// echo '<div class="alert alert-danger" style="text-align:center;">'.addslashes($error).'</div>';
+				}
 
 		}
 	}
@@ -86,7 +104,7 @@
 		{
 
 			// Get the user from the database based on the email and password entered by the user
-			$query="SELECT * FROM user where email='".mysqli_real_escape_string($link,$_POST['loginemail'])."' AND password='".$_POST['loginpassword']."' LIMIT 1";
+			$query="SELECT * FROM user where email='".mysqli_real_escape_string($link,$_POST['loginemail'])."' AND password='".md5($_POST['loginpassword'])."' LIMIT 1";
 			echo "<br>";
 			
 			// Execute the query and store the result
