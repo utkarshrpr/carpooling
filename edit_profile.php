@@ -155,7 +155,7 @@ margin: 0;
 		else
 		{	
 			$_SESSION['name']=$_POST['name'];
-			$sql="UPDATE `user` SET `name`='".mysqli_real_escape_string($link,$_POST['name'])."', `contact`='".mysqli_real_escape_string($link,$_POST['contact'])."', `password`='".mysqli_real_escape_string($link,$_POST['password'])."' WHERE `user_id`='".mysqli_real_escape_string($link,$row['user_id'])."'";
+			$sql="UPDATE `user` SET `name`='".mysqli_real_escape_string($link,$_POST['name'])."', `contact`='".mysqli_real_escape_string($link,$_POST['contact'])."', `password`='".mysqli_real_escape_string($link,md5($_POST['password']))."' WHERE `user_id`='".mysqli_real_escape_string($link,$row['user_id'])."'";
 			mysqli_query($link, $sql);		
 
 			header("Location:user.php");

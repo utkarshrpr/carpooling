@@ -70,7 +70,7 @@
 			{
 
 				// Insert the details entered by the user in the database
-				$query="INSERT INTO user (name,email,contact,password) VALUES('".mysqli_real_escape_string($link,$_POST['name'])."','".mysqli_real_escape_string($link,$_POST['email'])."','".mysqli_real_escape_string($link,$_POST['contact'])."','".mysqli_real_escape_string($link,$_POST['password'])."')";
+				$query="INSERT INTO user (name,email,contact,password) VALUES('".mysqli_real_escape_string($link,$_POST['name'])."','".mysqli_real_escape_string($link,$_POST['email'])."','".mysqli_real_escape_string($link,$_POST['contact'])."','".mysqli_real_escape_string($link,md5($_POST['password']))."')";
 				// Execute the query
 				mysqli_query($link,$query);
 
@@ -86,7 +86,7 @@
 		{
 
 			// Get the user from the database based on the email and password entered by the user
-			$query="SELECT * FROM user where email='".mysqli_real_escape_string($link,$_POST['loginemail'])."' AND password='".$_POST['loginpassword']."' LIMIT 1";
+			$query="SELECT * FROM user where email='".mysqli_real_escape_string($link,$_POST['loginemail'])."' AND password='".md5($_POST['loginpassword'])."' LIMIT 1";
 			echo "<br>";
 			
 			// Execute the query and store the result
