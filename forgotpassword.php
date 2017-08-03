@@ -82,9 +82,6 @@
 		{
 			$password = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"), -7);
 			$dup_password=$password;
-			
-			$sq="UPDATE `user` SET `password`='".mysqli_real_escape_string($link,md5($password))."' WHERE `email`='".mysqli_real_escape_string($link,$_POST['email'])."'";
-			mysqli_query($link, $sq);
 
 			$to = $_POST['email'];
 			$subject = "Reset password for Carpooling";
@@ -93,8 +90,17 @@
 			$txt.= "Kindly change it by logging in and editing your profile from Edit Profile section.";
 			$headers = "From: utkarshchauhan007@gmail.com";
 
-			mail($to,$subject,$txt,$headers);
-			header("Location:index.php");
+			if(@mail($to,$subject,$txt,$headers))
+			{
+				$sq="UPDATE `user` SET `password`='".mysqli_real_escape_string($link,md5($password))."' WHERE `email`='".mysqli_real_escape_string($link,$_POST['email'])."'";
+				mysqli_query($link, $sq);
+				header("Location:index.php");
+			}
+			else
+			{
+				$error="There was an error in sending the email. Please try again later !!";
+				echo '<div class="alert alert-danger" style="text-align:center;">'.addslashes($error).'</div>';
+			}
 		}
 	}
 
