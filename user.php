@@ -111,6 +111,12 @@ margin: 0;
 			</form>
 		</div>
 		<div class="border col-md-3">
+			<h3>My Bookings/Requests</h3>
+			<form class="navbar-form navbar-center" method="post">
+				<input type="submit" name="submit" class="btn btn-success " value="Show"/>
+			</form>
+		</div>
+		<div class="border col-md-3">
 			<h3>Rate Drivers</h3>
 			<form class="navbar-form navbar-center" method="post">
 				<input type="submit" name="submit" class="btn btn-success " value="Rate Drivers"/>
@@ -145,6 +151,10 @@ margin: 0;
 	if($_POST['submit']=="View")
 	{
 		header("Location:pending_approvals.php");
+	}
+	if($_POST['submit']=="Show")
+	{
+		header("Location:bookings_requests.php");
 	}
 	if($_POST['submit']=="Rate Drivers")
 	{

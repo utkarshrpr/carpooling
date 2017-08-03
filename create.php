@@ -5,7 +5,6 @@ if(!isset($_SESSION['id']))
 	header("Location:index.php");
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -81,9 +80,8 @@ margin: 0;
 		echo '<h2>Hi, '.$_SESSION['name'].'! Welcome to Carpooling !!</h2>';
 
 	?>
-
 	<div class="row">
-	  <form role="form" method="post">
+	  <form id="routeForm" role="form" method="post">
         <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
             <label for="source">Source</label>
             <input name="source" type="text" class="form-control" id="source" placeholder="Enter Starting Point of Trip">
@@ -120,6 +118,14 @@ margin: 0;
 	</div>
 
 </div>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyB82qWTjFYGu9xkvmWGFIkpcXnOjmwO6hM&sensor=false&libraries=places"></script>
+<script type="text/javascript">
+    google.maps.event.addDomListener(window, 'load', function () {
+    	var source = new google.maps.places.Autocomplete(document.getElementById('source'));
+    	var via = new google.maps.places.Autocomplete(document.getElementById('via'));
+    	var destination = new google.maps.places.Autocomplete(document.getElementById('destination'));
+    });
+</script>
 <!-- This script is used for datetime-picker used in the date-time field -->
 <script type="text/javascript">
 	$(".form_datetime").datetimepicker({
@@ -130,9 +136,35 @@ margin: 0;
 		startDate: "+0d",
 		minuteStep: 10
 	});
+		// prevents form submition on pressing enter
+	$('#routeForm').on('keyup keypress', function(e) {
+	  var keyCode = e.keyCode || e.which;
+	  if (keyCode === 13) { 
+	    e.preventDefault();
+	    return false;
+	  }
+	});
 </script>
 <?php
 	
+	function redirect($url)
+	{
+    	if (!headers_sent())
+    	{    
+      	  header('Location: '.$url);
+       	 exit;
+        }
+    	else
+    	{  
+    		echo '<script type="text/javascript">';
+       		echo 'window.location.href="'.$url.'";';
+        	echo '</script>';
+       		echo '<noscript>';
+	        echo '<meta http-equiv="refresh" content="0;url='.$url.'" />';
+	        echo '</noscript>'; exit;
+    	}
+	}
+
 	if($_POST['submit']=="Create Trip")
 	{
 
@@ -167,7 +199,7 @@ margin: 0;
 
 			// Execute the query
 			mysqli_query($link,$query);
-
+			redirect("user.php");
 		}
 	}
 

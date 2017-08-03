@@ -103,6 +103,7 @@ margin: 0;
 	<thead>
 		<tr>
 		<th style="text-align:center">Booked By</th>
+		<th style="text-align:center">Contact</th>
 		<th style="text-align:center">User Rating</th>
 		<th style="text-align:center">Source</th>
 		<th style="text-align:center">Destination</th>
@@ -129,12 +130,14 @@ margin: 0;
 	 	$destination = $row2['destination'];
 	 	$date_time = $row2['date_time'];
 	 	$user = $row1['name'];
+	 	$contact = $row1['contact'];
 	 	$rating = $row1['rating'];
 	 	$free_spots = $row2['free_spots'];
 
 	 	$_SESSION['driver_id']=$_SESSION['id'];
 
 		$table.= '<tr id="'.$id_number.'"><td style="text-align:center;">'.$user.'</td>';
+		$table.= '<td style="text-align:center;">'.$contact.'</td>';
 		$table.= '<td style="text-align:center;">'.$rating.'</td>';
 		$table.= '<td style="text-align:center;">'.$source.'</td>';
 		$table.= '<td style="text-align:center;">'.$destination.'</td>';

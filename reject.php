@@ -159,6 +159,19 @@ margin: 0;
 			$query2="UPDATE `approvals` SET `status`='rejected' WHERE `user_id`='".mysqli_real_escape_string($link,$_GET['user_id'])."' AND `driver_id`='".mysqli_real_escape_string($link,$_SESSION['driver_id'])."' AND `trip_id`='".mysqli_real_escape_string($link,$row1['trip_id'])."' AND `passengers`='".mysqli_real_escape_string($link,$_POST['passengers'])."'";
 			mysqli_query($link, $query2);	
 
+			$sql = "SELECT name,email FROM user WHERE user_id='".mysqli_real_escape_string($link,$_GET['user_id'])."'";
+			$resultsql = mysqli_query($link,$sql);
+			$rowsql = mysqli_fetch_array($resultsql);
+
+			$to = $rowsql['email'];
+			$subject = "Booking request accepted for your trip to ".$_POST['destination'];
+			$txt = "Hello ".$rowsql['name'].","."\r\n";
+			$txt.= $_SESSION['name']." has requested a booking for the following trip:"."\r\n";
+			$txt.= "Source: ".$_POST['source']."\r\n"."Destination: ".$_POST['destination']."\r\n"."Date-Time: ".$_POST['date_time']."\r\n"."Number of Passengers: ".$_POST['passengers']."\r\n";
+			$headers = "From: utkarshchauhan007@gmail.com";
+
+			mail($to,$subject,$txt,$headers);
+
 			header("Location:pending_approvals.php");
 		}
 	}
